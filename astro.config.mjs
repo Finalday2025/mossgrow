@@ -1,5 +1,8 @@
-// @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  // 换成你的 GitHub 用户名
+  site: "https://Finalday2025.github.io",
+  // 仓库名，以斜杠开头
+  base: "/mossgrow",
+});
