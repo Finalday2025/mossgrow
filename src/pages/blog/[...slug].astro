@@ -15,19 +15,34 @@ const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
-  <main class="container">
-    <nav class="back-nav">
-      <a href={`${import.meta.env.BASE_URL}/`} class="back-link">
-        ← 返回首页
-      </a>
+  <div class="box">
+    <nav class="nav">
+      <a href={`${import.meta.env.BASE_URL}/`} class="logo">mossgrow</a>
+      <ul>
+        <li><a href={`${import.meta.env.BASE_URL}/`}>首页</a></li>
+        <li><a href={`${import.meta.env.BASE_URL}/#articles`}>文章</a></li>
+      </ul>
     </nav>
 
     <article class="post">
+      <a href={`${import.meta.env.BASE_URL}/`} class="back">← 返回首页</a>
+
       <header class="post-header">
+        {/* 标签行 —— 放在标题前面 */}
+        {post.data.tags && post.data.tags.length > 0 && (
+          <div class="tag-row">
+            {post.data.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+
         <h1 class="post-title">{post.data.title}</h1>
+
         {post.data.description && (
           <p class="post-description">{post.data.description}</p>
         )}
+
         <time class="post-date" datetime={post.data.pubDate.toISOString()}>
           {post.data.pubDate.toLocaleDateString('zh-CN', {
             year: 'numeric',
@@ -41,95 +56,227 @@ const { Content } = await render(post);
         <Content />
       </div>
     </article>
-  </main>
+
+    <footer class="ft">
+      <p>© {new Date().getFullYear()} mossgrow · 用心记录每一天</p>
+    </footer>
+  </div>
 </Layout>
 
 <style>
-  .container {
+  .box {
+    max-width: 1040px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0 1.25rem;
+    margin-bottom: 3.5rem;
+    position: relative;
+  }
+
+  .nav::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--soft), transparent);
+    opacity: 0.4;
+  }
+
+  .logo {
+    font: 600 2rem 'Caveat', cursive;
+    color: var(--main);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transform: rotate(-0.5deg);
+  }
+
+  .logo::before {
+    content: '❧';
+    color: #8ab88e;
+    font-size: 1.1rem;
+    transform: rotate(-8deg);
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav a {
+    color: #6a7a6e;
+    font-size: 1rem;
+    position: relative;
+    transition: color 0.25s;
+  }
+
+  .nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 1px;
+    background: var(--soft);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.25s ease;
+  }
+
+  .nav a:hover {
+    color: var(--main);
+  }
+
+  .nav a:hover::after {
+    transform: scaleX(1);
+  }
+
+  .back {
+    display: inline-block;
+    font: 1.1rem 'Caveat', cursive;
+    color: var(--soft);
+    margin-bottom: 1.5rem;
+    transition: color 0.25s;
+  }
+
+  .back:hover {
+    color: var(--main);
+  }
+
+  .post {
     max-width: 720px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
-      'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    color: #1f2937;
-    line-height: 1.7;
-  }
-
-  .back-nav {
-    margin-bottom: 2rem;
-  }
-
-  .back-link {
-    color: #6b7280;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.2s ease;
-  }
-
-  .back-link:hover {
-    color: #2563eb;
   }
 
   .post-header {
     margin-bottom: 2.5rem;
     padding-bottom: 2rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px dashed rgba(106, 154, 120, 0.3);
+  }
+
+  /* === 标签行：标题上方 === */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .tag {
+    display: inline-block;
+    font: 0.95rem 'Caveat', cursive;
+    color: var(--main);
+    background: rgba(138, 184, 142, 0.22);
+    border-radius: 9999px;
+    padding: 0.1rem 0.75rem 0.15rem;
+    line-height: 1.4;
+    white-space: nowrap;
   }
 
   .post-title {
-    font-size: 2rem;
-    font-weight: 700;
+    font: 400 2.2rem/1.4 'Ma Shan Zheng', 'Long Cang', 'Gloria Hallelujah', cursive;
+    color: var(--main);
     margin: 0 0 0.75rem;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
+    letter-spacing: 0.02em;
   }
 
   .post-description {
     margin: 0 0 1rem;
-    color: #6b7280;
-    font-size: 1.1rem;
+    color: #5a6a5e;
+    font-size: 1.05rem;
   }
 
   .post-date {
-    font-size: 0.875rem;
-    color: #9ca3af;
+    font: 1rem 'Caveat', cursive;
+    color: var(--mute);
   }
 
+  /* === Markdown 渲染样式 === */
   .post-content :global(h1) {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font: 400 1.8rem/1.4 'Ma Shan Zheng', 'Long Cang', 'Gloria Hallelujah', cursive;
+    color: var(--main);
     margin: 2.5rem 0 1rem;
   }
 
   .post-content :global(h2) {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font: 400 1.5rem/1.4 'Ma Shan Zheng', 'Long Cang', 'Gloria Hallelujah', cursive;
+    color: var(--main);
     margin: 2rem 0 0.75rem;
+    display: inline-block;
+    position: relative;
+  }
+
+  .post-content :global(h2)::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -8px;
+    bottom: 1px;
+    height: 10px;
+    background: linear-gradient(90deg, rgba(170, 210, 180, 0.55), rgba(200, 220, 170, 0.5));
+    z-index: -1;
+    border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%;
   }
 
   .post-content :global(h3) {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font: 400 1.25rem/1.4 'Kalam', cursive;
+    color: var(--main);
     margin: 1.75rem 0 0.5rem;
   }
 
   .post-content :global(p) {
     margin: 1rem 0;
+    line-height: 2;
   }
 
   .post-content :global(a) {
-    color: #2563eb;
-    text-decoration: none;
+    color: var(--soft);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(106, 154, 120, 0.4);
+    transition: all 0.2s;
   }
 
   .post-content :global(a:hover) {
-    text-decoration: underline;
+    color: var(--main);
+    text-decoration-color: var(--soft);
   }
 
   .post-content :global(ul),
   .post-content :global(ol) {
     margin: 1rem 0;
     padding-left: 1.5rem;
+  }
+
+  .post-content :global(ul) {
+    list-style: none;
+  }
+
+  .post-content :global(ul li) {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+
+  .post-content :global(ul li)::before {
+    content: '❧';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #8ab88e;
+    font-size: 0.8em;
+  }
+
+  .post-content :global(ol) {
+    list-style: decimal;
   }
 
   .post-content :global(li) {
@@ -139,16 +286,18 @@ const { Content } = await render(post);
   .post-content :global(blockquote) {
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;
-    border-left: 4px solid #e5e7eb;
-    color: #6b7280;
-    background: #f9fafb;
+    border-left: 4px solid var(--soft);
+    color: var(--mute);
+    background: rgba(255, 255, 255, 0.55);
     border-radius: 0 8px 8px 0;
+    font-style: italic;
   }
 
   .post-content :global(code) {
     font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
-    font-size: 0.875em;
-    background: #f3f4f6;
+    font-size: 0.85em;
+    background: #e8f0e9;
+    color: var(--main);
     padding: 0.15rem 0.4rem;
     border-radius: 4px;
   }
@@ -156,7 +305,7 @@ const { Content } = await render(post);
   .post-content :global(pre) {
     margin: 1.5rem 0;
     padding: 1rem 1.25rem;
-    background: #1f2937;
+    background: #2e3a30;
     border-radius: 8px;
     overflow-x: auto;
   }
@@ -164,17 +313,67 @@ const { Content } = await render(post);
   .post-content :global(pre code) {
     background: none;
     padding: 0;
-    color: #e5e7eb;
+    color: #d4e8d8;
   }
 
   .post-content :global(img) {
     max-width: 100%;
     border-radius: 8px;
+    display: block;
+    margin: 1.5rem auto;
   }
 
   .post-content :global(hr) {
     margin: 2.5rem 0;
     border: none;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px dashed rgba(106, 154, 120, 0.3);
+  }
+
+  .post-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .post-content :global(th),
+  .post-content :global(td) {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px dashed rgba(106, 154, 120, 0.25);
+  }
+
+  .post-content :global(th) {
+    font-family: 'Gloria Hallelujah', cursive;
+    color: var(--main);
+    font-weight: 400;
+    border-bottom: 2px solid rgba(106, 154, 120, 0.4);
+  }
+
+  .ft {
+    margin-top: 6rem;
+    padding-top: 2.5rem;
+    text-align: center;
+    font: 1.1rem 'Caveat', cursive;
+    color: var(--mute);
+    border-top: 1px dashed rgba(106, 154, 120, 0.3);
+  }
+
+  .ft::before {
+    content: '~';
+    display: block;
+    color: #8ab88e;
+    font-size: 1.5rem;
+    line-height: 0.5;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 520px) {
+    body {
+      font-size: 16px;
+    }
+    .post-title {
+      font-size: 1.6rem;
+    }
   }
 </style>

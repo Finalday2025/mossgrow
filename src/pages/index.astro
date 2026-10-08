@@ -2,123 +2,400 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const posts = (await getCollection('blog')).sort(
+const allPosts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+const recentPosts = allPosts.slice(0, 4);
+const longPosts = allPosts.slice(4);
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' }).replace('/', '·');
 ---
 
 <Layout>
-  <main class="container">
-    <header class="site-header">
-      <h1 class="site-title">mossgrow</h1>
-      <p class="site-subtitle">记录成长，点滴积累</p>
-    </header>
-
-    {posts.length === 0 ? (
-      <p class="empty">还没有文章，敬请期待。</p>
-    ) : (
-      <ul class="post-list">
-        {posts.map((post) => (
-          <li class="post-item">
-            <a href={`${import.meta.env.BASE_URL}/blog/${post.id}/`} class="post-link">
-              <div class="post-meta">
-                <time datetime={post.data.pubDate.toISOString()}>
-                  {post.data.pubDate.toLocaleDateString('zh-CN', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-              </div>
-              <h2 class="post-title">{post.data.title}</h2>
-              {post.data.description && (
-                <p class="post-description">{post.data.description}</p>
-              )}
-            </a>
-          </li>
-        ))}
+  <div class="box">
+    <nav class="nav">
+      <a href={`${import.meta.env.BASE_URL}/`} class="logo">mossgrow</a>
+      <ul>
+        <li><a href="#articles">文章</a></li>
+        <li><a href="#about">关于</a></li>
+        <li><a href="#">订阅</a></li>
       </ul>
-    )}
-  </main>
+    </nav>
+
+    <div class="mag">
+      <aside class="left" id="about">
+        <span class="badge">开始记录成长</span>
+        <h1>缓慢生长，<br />持续进步。</h1>
+        <p class="sub">
+          mossgrow 是一个关于技术、阅读与个人成长的地方。像苔藓一样，不急不躁，贴着地面，慢慢往上长。
+        </p>
+        <div class="sig">
+          <span class="n">— 这里是我</span>
+          一个爱折腾的开发者<br />
+          正在学习如何慢下来<br />
+          偶尔读书，偶尔写代码
+        </div>
+      </aside>
+
+      <main class="right" id="articles">
+        <section>
+          <div class="sec-hd">
+            <h2>最新文章</h2>
+            <a href="#" class="more">全部 →</a>
+          </div>
+          <div class="list">
+            {recentPosts.map((post) => (
+              <a href={`${import.meta.env.BASE_URL}/blog/${post.id}/`} class="item">
+                <span class="date">{fmtDate(post.data.pubDate)}</span>
+                <div>
+                  <div class="title-row">
+                    {post.data.tags?.map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                    <span class="title">{post.data.title}</span>
+                  </div>
+                  <div class="desc">{post.data.description ?? '暂无描述'}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <div class="sec-hd">
+            <h2>精选文章</h2>
+            <a href="#" class="more">全部 →</a>
+          </div>
+          <div class="list">
+            {longPosts.length > 0 ? (
+              longPosts.map((post) => (
+                <a href={`${import.meta.env.BASE_URL}/blog/${post.id}/`} class="item">
+                  <span class="date">{fmtDate(post.data.pubDate)}</span>
+                  <div>
+                    <div class="title-row">
+                      {post.data.tags?.map((tag) => (
+                        <span class="tag">{tag}</span>
+                      ))}
+                      <span class="title">{post.data.title}</span>
+                    </div>
+                    <div class="desc">{post.data.description ?? '暂无描述'}</div>
+                  </div>
+                </a>
+              ))
+            ) : (
+              <p class="empty">更多内容在路上了…</p>
+            )}
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="ft">© {new Date().getFullYear()} mossgrow · 缓慢生长</footer>
+  </div>
 </Layout>
 
 <style>
-  .container {
-    max-width: 720px;
+  .box {
+    max-width: 1040px;
     margin: 0 auto;
-    padding: 4rem 1.5rem 6rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
-      'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    color: #1f2937;
-    line-height: 1.7;
+    position: relative;
+    z-index: 1;
   }
 
-  .site-header {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #e5e7eb;
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0 1.25rem;
+    margin-bottom: 3.5rem;
+    position: relative;
   }
 
-  .site-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -0.02em;
+  .nav::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--soft), transparent);
+    opacity: 0.4;
   }
 
-  .site-subtitle {
-    margin: 0.5rem 0 0;
-    color: #6b7280;
+  .logo {
+    font: 600 2rem 'Caveat', cursive;
+    color: var(--main);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transform: rotate(-0.5deg);
+  }
+
+  .logo::before {
+    content: '❧';
+    color: #8ab88e;
+    font-size: 1.1rem;
+    transform: rotate(-8deg);
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav a {
+    color: #6a7a6e;
     font-size: 1rem;
+    position: relative;
+    transition: color 0.25s;
   }
 
-  .empty {
-    color: #6b7280;
-    font-style: italic;
+  .nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 1px;
+    background: var(--soft);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.25s ease;
   }
 
-  .post-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .nav a:hover {
+    color: var(--main);
   }
 
-  .post-item {
+  .nav a:hover::after {
+    transform: scaleX(1);
+  }
+
+  .mag {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 4.5rem;
+    align-items: start;
+  }
+
+  .left {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .badge {
+    display: inline-block;
+    font: 1.1rem 'Caveat', cursive;
+    color: #4a7a5a;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1.5px dashed #8ab88e;
+    border-radius: 20px;
+    padding: 0.15rem 0.9rem 0.2rem;
+    margin-bottom: 1.75rem;
+    transform: rotate(-0.8deg);
+  }
+
+  h1 {
+    font: 400 2.8rem/1.35 'Ma Shan Zheng', 'Long Cang', 'Gloria Hallelujah', cursive;
+    color: var(--main);
+    margin-bottom: 0.7em;
+    text-shadow: 2px 3px 8px rgba(106, 154, 120, 0.15);
+    letter-spacing: 0.02em;
+  }
+
+  .sub {
+    color: #5a6a5e;
+    font-size: 1.05rem;
+    line-height: 2;
     margin-bottom: 2rem;
   }
 
-  .post-link {
+  .sig {
+    padding-top: 1.75rem;
+    border-top: 1px dashed rgba(106, 154, 120, 0.35);
+    font: 1.1rem/1.8 'Caveat', cursive;
+    color: var(--mute);
+    transform: rotate(-0.4deg);
+  }
+
+  .sig .n {
+    color: var(--main);
+    font-size: 1.4rem;
     display: block;
-    text-decoration: none;
-    color: inherit;
-    padding: 1.5rem;
-    border-radius: 12px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    margin-bottom: 0.25rem;
   }
 
-  .post-link:hover {
-    background-color: #f9fafb;
+  .right section + section {
+    margin-top: 4rem;
   }
 
-  .post-meta {
+  .sec-hd {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid rgba(106, 154, 120, 0.25);
+  }
+
+  h2 {
+    font: 1.7rem 'Ma Shan Zheng', 'Long Cang', 'Gloria Hallelujah', cursive;
+    color: var(--main);
+  }
+
+  .more {
+    font: 1.05rem 'Caveat', cursive;
+    color: var(--soft);
+    transition: color 0.25s;
+  }
+
+  .more:hover {
+    color: var(--main);
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.25rem;
+    padding: 1.35rem 0;
+    position: relative;
+    border-bottom: 1px dashed rgba(106, 154, 120, 0.28);
+    transition: all 0.25s ease;
+  }
+
+  .item:last-child {
+    border-bottom: none;
+  }
+
+  .item::before {
+    content: '→';
+    position: absolute;
+    left: -22px;
+    top: 1.5rem;
+    color: var(--soft);
+    opacity: 0;
+    transition: all 0.25s ease;
+  }
+
+  .item:hover {
+    padding-left: 0.75rem;
+  }
+
+  .item:hover::before {
+    opacity: 1;
+    left: -6px;
+  }
+
+  .date {
+    font: 1rem 'Caveat', cursive;
+    color: var(--mute);
+    padding-top: 0.25rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* === 关键：标题行，标签在前 === */
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .title {
+    font: 400 1.2rem 'Kalam', cursive;
+    line-height: 1.5;
+    transition: color 0.25s;
+  }
+
+  .item:hover .title {
+    color: var(--main);
+  }
+
+  .tag {
+    display: inline-block;
+    font: 0.9rem 'Caveat', cursive;
+    color: var(--main);
+    background: rgba(138, 184, 142, 0.22);
+    border-radius: 9999px;
+    padding: 0.05rem 0.65rem 0.1rem;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .desc {
+    font-size: 0.9rem;
+    color: #5a6a5e;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .empty {
+    color: var(--mute);
+    font-style: italic;
+    padding: 1rem 0;
+  }
+
+  .ft {
+    margin-top: 6rem;
+    padding-top: 2.5rem;
+    text-align: center;
+    font: 1.1rem 'Caveat', cursive;
+    color: var(--mute);
+    border-top: 1px dashed rgba(106, 154, 120, 0.3);
+  }
+
+  .ft::before {
+    content: '~';
+    display: block;
+    color: #8ab88e;
+    font-size: 1.5rem;
+    line-height: 0.5;
     margin-bottom: 0.5rem;
   }
 
-  .post-meta time {
-    font-size: 0.875rem;
-    color: #9ca3af;
+  @media (max-width: 820px) {
+    .mag {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .left {
+      position: static;
+    }
+    h1 {
+      font-size: 2.2rem;
+    }
+    .nav ul {
+      gap: 1.25rem;
+    }
+    .nav a {
+      font-size: 0.9rem;
+    }
   }
 
-  .post-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem;
-    color: #111827;
-  }
-
-  .post-description {
-    margin: 0;
-    color: #6b7280;
-    font-size: 0.95rem;
+  @media (max-width: 520px) {
+    body {
+      font-size: 16px;
+    }
+    h1 {
+      font-size: 1.9rem;
+    }
+    .item {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+    .date {
+      padding-top: 0;
+    }
+    .box {
+      padding: 0 1.25rem;
+    }
   }
 </style>

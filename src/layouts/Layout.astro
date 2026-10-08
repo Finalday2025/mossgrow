@@ -18,41 +18,70 @@ const siteName = 'mossgrow';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}/favicon.ico`} />
+    <link rel="icon" type="image/svg+xml" href={new URL('favicon.ico', Astro.site).href} />
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Gloria+Hallelujah&family=Kalam:wght@300;400;700&family=Long+Cang&family=Ma+Shan+Zheng&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <slot />
   </body>
 </html>
 
-<style>
-  html,
-  body {
+<style is:global>
+  * {
+    box-sizing: border-box;
     margin: 0;
-    width: 100%;
-    min-height: 100%;
-    background-color: #ffffff;
+    padding: 0;
+  }
+
+  :root {
+    --bg: #f0f5ef;
+    --main: #3d5a44;
+    --soft: #6a9a78;
+    --text: #2e3a30;
+    --mute: #8a9a8e;
   }
 
   body {
+    font: 17px/2 'Kalam', cursive;
+    color: var(--text);
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at 12% 15%, rgba(170, 210, 180, 0.45), transparent 40%),
+      radial-gradient(circle at 88% 25%, rgba(200, 220, 170, 0.4), transparent 38%),
+      radial-gradient(circle at 22% 85%, rgba(160, 200, 190, 0.35), transparent 40%),
+      radial-gradient(circle at 78% 78%, rgba(220, 215, 180, 0.35), transparent 40%);
+    background-attachment: fixed;
+    padding: 2.5rem 1.75rem 4rem;
+    min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
   }
 </style>
