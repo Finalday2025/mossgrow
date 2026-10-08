@@ -97,19 +97,24 @@ const fmtDate = (d: Date) =>
 </Layout>
 
 <style>
+  /* === 容器：加宽 + 撑满屏幕高度 === */
   .box {
-    max-width: 1040px;
+    max-width: 1200px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 6.5rem);
   }
 
+  /* === 导航 === */
   .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0 1.25rem;
-    margin-bottom: 3.5rem;
+    margin-bottom: 3rem;
     position: relative;
   }
 
@@ -173,11 +178,14 @@ const fmtDate = (d: Date) =>
     transform: scaleX(1);
   }
 
+  /* === 主体：两栏 + 撑满 === */
   .mag {
     display: grid;
-    grid-template-columns: 5fr 7fr;
-    gap: 4.5rem;
+    grid-template-columns: 4fr 7fr;
+    gap: 5rem;
     align-items: start;
+    flex: 1;
+    padding: 1.5rem 0 2rem;
   }
 
   .left {
@@ -185,6 +193,7 @@ const fmtDate = (d: Date) =>
     top: 2rem;
   }
 
+  /* === 左栏 Hero === */
   .badge {
     display: inline-block;
     font: 1.1rem 'Caveat', cursive;
@@ -227,8 +236,9 @@ const fmtDate = (d: Date) =>
     margin-bottom: 0.25rem;
   }
 
+  /* === 右栏 === */
   .right section + section {
-    margin-top: 4rem;
+    margin-top: 3.5rem;
   }
 
   .sec-hd {
@@ -255,6 +265,7 @@ const fmtDate = (d: Date) =>
     color: var(--main);
   }
 
+  /* === 文章列表 === */
   .list {
     display: flex;
     flex-direction: column;
@@ -300,7 +311,6 @@ const fmtDate = (d: Date) =>
     letter-spacing: 0.03em;
   }
 
-  /* === 关键：标题行，标签在前 === */
   .title-row {
     display: flex;
     align-items: baseline;
@@ -343,9 +353,10 @@ const fmtDate = (d: Date) =>
     padding: 1rem 0;
   }
 
+  /* === 页脚：贴近内容 === */
   .ft {
-    margin-top: 6rem;
-    padding-top: 2.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
     text-align: center;
     font: 1.1rem 'Caveat', cursive;
     color: var(--mute);
@@ -361,10 +372,25 @@ const fmtDate = (d: Date) =>
     margin-bottom: 0.5rem;
   }
 
+  /* === 超大屏再放宽 === */
+  @media (min-width: 1400px) {
+    .box {
+      max-width: 1320px;
+    }
+    .mag {
+      gap: 6rem;
+    }
+  }
+
+  /* === 中屏以下：单栏 === */
   @media (max-width: 820px) {
+    .box {
+      min-height: auto;
+    }
     .mag {
       grid-template-columns: 1fr;
       gap: 2.5rem;
+      padding: 1rem 0 2rem;
     }
     .left {
       position: static;
@@ -380,6 +406,7 @@ const fmtDate = (d: Date) =>
     }
   }
 
+  /* === 小屏 === */
   @media (max-width: 520px) {
     body {
       font-size: 16px;
@@ -393,9 +420,6 @@ const fmtDate = (d: Date) =>
     }
     .date {
       padding-top: 0;
-    }
-    .box {
-      padding: 0 1.25rem;
     }
   }
 </style>
